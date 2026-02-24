@@ -232,6 +232,50 @@ function Start() {
     jor1k = new Jor1k(jor1kparameters);
 
 }
+
+// Automation Helper
+(function() {
+    function getCmd() {
+        var hash = window.location.hash.substring(1);
+        if (hash.startsWith("cmd=")) {
+            return decodeURIComponent(hash.substring(4));
+        }
+        return false;
+    }
+
+    var cmd = getCmd();
+    if (cmd) {
+        console.log("Automation: Command detected:", cmd);
+        var output = "";
+        var checkBoot = setInterval(function() {
+            if (window.jor1k && jor1k.terms && jor1k.terms[0]) {
+                clearInterval(checkBoot);
+                console.log("Automation: Hooking into terminal...");
+                jor1k.terms[0].SetCharReceiveListener(function(c) {
+                    output += c;
+                    if (output.includes("~ $") || output.includes("/ #") || output.includes("root@localhost")) {
+                        if (window.cmdSent) {
+                            window.result = output;
+                            console.log("Automation: Command finished.");
+                        }
+                    }
+                });
+
+                // Wait for initial boot
+                var waitBoot = setInterval(function() {
+                     if (output.includes("~ $") || output.includes("/ #") || output.includes("root@localhost")) {
+                         clearInterval(waitBoot);
+                         console.log("Automation: System ready. Sending command.");
+                         output = ""; // clear before cmd
+                         window.cmdSent = true;
+                         var chars = (cmd + "\n").split("").map(function(c) { return c.charCodeAt(0); });
+                         jor1k.SendChars(chars);
+                     }
+                }, 1000);
+            }
+        }, 500);
+    }
+})();
 </script>
 
 <script>
