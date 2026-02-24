@@ -8,6 +8,7 @@ More information can be found on the [Wiki][project wiki] pages.
 
 ### Demos
 
+* **[NEW] [Automation Dashboard](index.html)**: Modular automation system with Natural Language support.
 * Main [demo][project demo] page
 * [Edit, compile and run](https://s-macke.github.io/jor1k/demos/compile.html) C code in your browser
 * [Edit, compile and run](https://cs-education.github.io/sys/#VM) C code from the University of Illinois
@@ -26,6 +27,12 @@ More information can be found on the [Wiki][project wiki] pages.
 ### LICENSE
  * The program is distributed under the terms of the Simplified BSD License. The license details can be found in the file "LICENSE.md"
  * The ACE editor is BSD licensed.
+
+### Automation System Features
+* **REST API**: Integrated with Playwright for web tasks and jor1k for sandbox tasks.
+* **Natural Language**: Submit tasks in plain language (e.g., "buka example.com dan screenshot").
+* **Docker Ready**: Fully containerized environment for consistent execution.
+* **Job Queue**: Asynchronous job handling with Job ID status tracking.
 
 ### Developer
 Sebastian Macke [simulationcorner.net](https://simulationcorner.net)
