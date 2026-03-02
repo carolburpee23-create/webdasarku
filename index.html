@@ -18,25 +18,21 @@
             --accent-orange: #fab387;
         }
         body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero { background: var(--bg-card); border-bottom: 2px solid var(--bg-accent); padding: 30px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .emulator-container { border: 2px solid var(--bg-accent); border-radius: 12px; overflow: hidden; height: 520px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hero { background: var(--bg-card); border-bottom: 2px solid var(--bg-accent); padding: 25px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .emulator-container { border: 2px solid var(--bg-accent); border-radius: 12px; overflow: hidden; height: 500px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         iframe { width: 100%; height: 100%; border: none; }
-        .terminal-log { background: #000; border: 1px solid var(--bg-accent); border-radius: 8px; height: 220px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-green); margin-top: 20px; position: relative; }
-        .terminal-header { position: sticky; top: -15px; background: #000; padding: 5px 0; border-bottom: 1px solid #222; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .card { background: var(--bg-card); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-primary { background: var(--accent-blue); border: none; color: var(--bg-dark); font-weight: 700; border-radius: 8px; padding: 10px 20px; }
-        .btn-primary:hover { background: #b4befe; }
-        .form-control { background: var(--bg-dark); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 8px; font-family: 'JetBrains Mono', monospace; }
+        .terminal-log { background: #000; border: 1px solid var(--bg-accent); border-radius: 8px; height: 180px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent-green); margin-top: 15px; position: relative; }
+        .card { background: var(--bg-card); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 12px; height: 100%; }
+        .btn-primary { background: var(--accent-blue); border: none; color: var(--bg-dark); font-weight: 700; border-radius: 8px; transition: all 0.2s; }
+        .btn-primary:hover { background: #b4befe; transform: scale(1.02); }
+        .form-control { background: var(--bg-dark); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 8px; font-size: 0.9rem; }
         .form-control:focus { background: #181825; color: var(--text-main); border-color: var(--accent-blue); box-shadow: none; }
-        .status-badge { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-badge { font-size: 0.65rem; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .status-online { background: var(--accent-green); color: var(--bg-dark); }
-        .status-busy { background: var(--accent-orange); color: var(--bg-dark); }
-        .quick-btn { background: var(--bg-accent); border: 1px solid transparent; color: var(--text-main); font-size: 0.8rem; padding: 5px 12px; border-radius: 6px; transition: all 0.2s; }
-        .quick-btn:hover { border-color: var(--accent-blue); background: var(--bg-dark); }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--bg-accent); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #45475a; }
+        .status-offline { background: var(--bg-accent); color: var(--text-main); opacity: 0.6; }
+        .settings-panel { background: rgba(0,0,0,0.4); border-radius: 12px; padding: 15px; margin-bottom: 25px; border: 1px dashed var(--bg-accent); }
+        .quick-btn { background: var(--bg-accent); border: 1px solid transparent; color: var(--text-main); font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; }
+        .quick-btn:hover { border-color: var(--accent-blue); }
     </style>
 </head>
 <body>
@@ -44,77 +40,87 @@
 <div class="hero mb-4">
     <div class="container d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="h2 mb-0 fw-bold">jor1k <span style="color:var(--accent-blue)">Automation Hub</span></h1>
-            <p class="small text-muted mb-0">Unified Sandbox Control & Automation Console</p>
+            <h1 class="h3 mb-0 fw-bold">jor1k <span style="color:var(--accent-blue)">Automation Hub</span></h1>
+            <p class="small text-muted mb-0">Professional Hybrid Control Center</p>
         </div>
         <div class="text-end">
-            <span class="status-badge status-online" id="systemStatus">System Ready</span>
-            <div class="small text-muted mt-1" id="bootProgress">Booting...</div>
+            <div id="runnerStatus" class="status-badge status-offline">CLOUD RUNNER: DISCONNECTED</div>
+            <div class="small text-muted mt-1" style="font-size:0.7rem">Static Mode Active</div>
         </div>
     </div>
 </div>
 
 <div class="container pb-5">
+
+    <!-- Cloud Configuration -->
+    <div class="settings-panel">
+        <div class="row align-items-center g-3">
+            <div class="col-md-3">
+                <h6 class="mb-0 fw-bold">⚙️ Runner Config</h6>
+                <p class="text-muted mb-0" style="font-size:0.7rem">Connect to Railway/Replit Runner</p>
+            </div>
+            <div class="col-md-7">
+                <input type="text" id="runnerUrl" class="form-control" placeholder="https://your-runner.up.railway.app" onchange="saveConfig()">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-info btn-sm w-100" onclick="testConnection()">Verify Link</button>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
-        <!-- Live Emulator & Console -->
+        <!-- Live Sandbox -->
         <div class="col-lg-8">
             <div class="emulator-container">
                 <iframe id="jor1kFrame" src="demos/main.html?embed=true"></iframe>
             </div>
             <div class="terminal-log" id="terminalLog">
-                <div class="terminal-header">
-                    <span class="text-muted small">LIVE CONSOLE OUTPUT</span>
-                    <button class="btn btn-link btn-sm p-0 text-muted" onclick="clearLog()">Clear</button>
-                </div>
-                <div id="logContent">[SYSTEM] Establishing connection to sandbox...<br></div>
+                <div id="logContent">[SYSTEM] Static Sandbox Initialized.<br></div>
             </div>
         </div>
 
-        <!-- Command Panel -->
+        <!-- Controls -->
         <div class="col-lg-4">
-            <div class="card p-4 mb-4 text-center border-primary shadow-sm">
-                <h4 class="h5 mb-3 fw-bold text-primary">⚡ Instant Cloud Desktop</h4>
-                <p class="small text-muted">Open a full Linux environment with Google Chrome pre-installed.</p>
-                <a href="http://localhost:6080/vnc.html?autoconnect=true" target="_blank" class="btn btn-primary w-100">LAUNCH DESKTOP</a>
-                <div class="mt-2 x-small text-muted" style="font-size:0.7rem">Works best on Railway/Replit deployment.</div>
+            <!-- Cloud Desktop -->
+            <div class="card p-4 mb-4 border-primary" id="desktopCard" style="opacity:0.4; pointer-events:none; transition: opacity 0.3s;">
+                <h4 class="h5 mb-2 fw-bold text-primary">⚡ Cloud Desktop</h4>
+                <p class="small text-muted mb-3">Instant Ubuntu GUI with Chrome.</p>
+                <a href="#" id="vncLink" target="_blank" class="btn btn-primary w-100 py-2">OPEN DESKTOP</a>
             </div>
 
+            <!-- Command Shell -->
             <div class="card p-4 mb-4">
-                <h4 class="h5 mb-3 fw-bold">🎮 Command Center</h4>
+                <h4 class="h5 mb-3 fw-bold">🎮 Command Shell</h4>
                 <div class="mb-3">
-                    <label class="form-label small text-muted">Direct Linux Shell</label>
-                    <input type="text" id="cmdInput" class="form-control" placeholder="e.g. ls -la /home/user">
+                    <input type="text" id="cmdInput" class="form-control" placeholder="ls -la">
                 </div>
-                <button class="btn btn-primary w-100 mb-3" id="executeBtn" onclick="executeCmd()">EXECUTE COMMAND</button>
+                <button class="btn btn-primary btn-sm w-100 mb-3" onclick="executeCmd()">SEND COMMAND</button>
                 <div class="d-flex flex-wrap gap-2">
                     <button class="quick-btn" onclick="quickCmd('uname -a')">uname</button>
                     <button class="quick-btn" onclick="quickCmd('date')">date</button>
                     <button class="quick-btn" onclick="quickCmd('top')">top</button>
-                    <button class="quick-btn" onclick="quickCmd('ls -R /')">list files</button>
                 </div>
             </div>
 
-            <div class="card p-4 mb-4">
-                <h4 class="h5 mb-3 fw-bold">🧠 AI Prompt</h4>
-                <p class="small text-muted">Speak naturally to the sandbox.</p>
-                <div class="mb-3">
-                    <textarea id="aiInput" class="form-control" rows="2" placeholder="e.g. What time is it?"></textarea>
-                </div>
-                <button class="btn btn-outline-primary btn-sm w-100" onclick="interpretAI()">INTERPRET & RUN</button>
-                <div id="aiFeedback" class="small mt-2" style="color:var(--accent-orange)"></div>
-            </div>
-
+            <!-- AI Assistant -->
             <div class="card p-4">
-                <h4 class="h5 mb-3 fw-bold">ℹ️ Quick Stats</h4>
-                <div class="d-flex justify-content-between mb-1 small">
-                    <span>Cores:</span> <span class="text-info">1 (OpenRISC)</span>
-                </div>
-                <div class="d-flex justify-content-between mb-1 small">
-                    <span>Memory:</span> <span class="text-info">32MB</span>
-                </div>
-                <div class="d-flex justify-content-between small">
-                    <span>Network:</span> <span class="text-info">Enabled</span>
-                </div>
+                <h4 class="h5 mb-3 fw-bold">🧠 AI Prompt</h4>
+                <textarea id="aiInput" class="form-control mb-3" rows="2" placeholder="e.g. Siapa saya?"></textarea>
+                <button class="btn btn-outline-primary btn-sm w-100" onclick="interpretAI()">RUN TASK</button>
+                <div id="aiFeedback" class="small mt-2" style="color:var(--accent-orange); font-size:0.75rem"></div>
+            </div>
+        </div>
+
+        <!-- Guide -->
+        <div class="col-12">
+            <div class="card p-4 bg-transparent border-secondary border-opacity-25 text-muted small">
+                <h6 class="text-main fw-bold">🚀 Quick Start Guide</h6>
+                <ol class="mb-0">
+                    <li><strong>Static Use:</strong> Use the Command Shell above to control the emulated OpenRISC sandbox directly in your browser.</li>
+                    <li><strong>Cloud Upgrade:</strong> Fork this repo and deploy to Railway. Copy the public URL.</li>
+                    <li><strong>Connect:</strong> Paste the URL in the Runner Config panel above. The Cloud Desktop button will activate.</li>
+                    <li><strong>Automate:</strong> Use the API endpoints documented in the source to trigger Playwright workflows.</li>
+                </ol>
             </div>
         </div>
     </div>
@@ -123,64 +129,79 @@
 <script>
     const frame = document.getElementById('jor1kFrame');
     const log = document.getElementById('logContent');
-    const logWrapper = document.getElementById('terminalLog');
-    const status = document.getElementById('systemStatus');
-    const bootInfo = document.getElementById('bootProgress');
-    const executeBtn = document.getElementById('executeBtn');
+    const terminal = document.getElementById('terminalLog');
+    const runnerUrlInput = document.getElementById('runnerUrl');
+    const runnerStatus = document.getElementById('runnerStatus');
+    const desktopCard = document.getElementById('desktopCard');
+    const vncLink = document.getElementById('vncLink');
 
-    window.addEventListener('message', function(event) {
-        const msg = event.data;
-        if (msg.type === 'output') {
-            log.innerHTML += msg.data.replace(/\n/g, '<br>');
-            logWrapper.scrollTop = logWrapper.scrollHeight;
-            if (msg.data.includes('~ $') || msg.data.includes('/ #')) {
-                bootInfo.innerText = "System Ready";
-            }
+    window.onload = () => {
+        const savedUrl = localStorage.getItem('jor1k_runner_url');
+        if (savedUrl) {
+            runnerUrlInput.value = savedUrl;
+            updateLinks(savedUrl);
+            testConnection();
         }
-        if (msg.type === 'status') {
-            status.innerText = "EXECUTING";
-            status.className = "status-badge status-busy";
-            executeBtn.disabled = true;
+    };
+
+    function saveConfig() {
+        const url = runnerUrlInput.value.trim().replace(/\/$/, "");
+        localStorage.setItem('jor1k_runner_url', url);
+        updateLinks(url);
+        testConnection();
+    }
+
+    function updateLinks(url) {
+        if (!url) {
+            desktopCard.style.opacity = "0.4";
+            desktopCard.style.pointerEvents = "none";
+            return;
         }
-        if (msg.type === 'result') {
-            status.innerText = "System Ready";
-            status.className = "status-badge status-online";
-            executeBtn.disabled = false;
-            log.innerHTML += '<br><span style="color:var(--accent-orange)">[DONE] Task finished successfully.</span><br>';
-            logWrapper.scrollTop = logWrapper.scrollHeight;
+        // Heuristic for port/vnc access
+        vncLink.href = url.includes(':') ? `${url}/vnc.html?autoconnect=true` : `${url}/vnc.html?autoconnect=true`;
+        desktopCard.style.opacity = "1";
+        desktopCard.style.pointerEvents = "auto";
+    }
+
+    async function testConnection() {
+        const url = runnerUrlInput.value.trim();
+        if (!url) return;
+        runnerStatus.innerText = "VERIFYING...";
+        try {
+            const res = await fetch(`${url}/health`);
+            if (res.ok) {
+                runnerStatus.innerText = "CLOUD RUNNER: CONNECTED";
+                runnerStatus.className = "status-badge status-online";
+            } else throw new Error();
+        } catch (e) {
+            runnerStatus.innerText = "CLOUD RUNNER: DISCONNECTED";
+            runnerStatus.className = "status-badge status-offline";
+        }
+    }
+
+    window.addEventListener('message', (e) => {
+        if (e.data.type === 'output') {
+            log.innerHTML += e.data.data.replace(/\n/g, '<br>');
+            terminal.scrollTop = terminal.scrollHeight;
         }
     });
 
     function executeCmd() {
         const cmd = document.getElementById('cmdInput').value;
         if (!cmd) return;
-
-        log.innerHTML += `<br><span style="color:var(--accent-blue)">[USER] Sending: ${cmd}</span><br>`;
+        log.innerHTML += `<br><span style="color:var(--accent-blue)">[USER] ${cmd}</span><br>`;
         frame.contentWindow.postMessage({ type: 'execute', command: cmd }, '*');
     }
 
-    function quickCmd(cmd) {
-        document.getElementById('cmdInput').value = cmd;
-        executeCmd();
-    }
-
-    function clearLog() {
-        log.innerHTML = "[SYSTEM] Console cleared.<br>";
-    }
+    function quickCmd(c) { document.getElementById('cmdInput').value = c; executeCmd(); }
 
     function interpretAI() {
         const text = document.getElementById('aiInput').value.toLowerCase();
-        const feedback = document.getElementById('aiFeedback');
-
-        let cmd = "";
-        if (text.includes("who") || text.includes("siapa")) cmd = "whoami";
-        else if (text.includes("time") || text.includes("date") || text.includes("jam")) cmd = "date";
-        else if (text.includes("list") || text.includes("lihat")) cmd = "ls -la";
-        else if (text.includes("system") || text.includes("os") || text.includes("info")) cmd = "uname -a";
-        else if (text.includes("cpu") || text.includes("proses")) cmd = "top -n 1";
-        else cmd = text;
-
-        feedback.innerText = `Mapped to: ${cmd}`;
+        let cmd = text;
+        if (text.includes("siapa") || text.includes("who")) cmd = "whoami";
+        else if (text.includes("waktu") || text.includes("date")) cmd = "date";
+        else if (text.includes("list")) cmd = "ls -la";
+        document.getElementById('aiFeedback').innerText = `Mapped to: ${cmd}`;
         document.getElementById('cmdInput').value = cmd;
         executeCmd();
     }
