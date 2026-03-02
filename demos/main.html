@@ -2,20 +2,20 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>jor1k: OpenRISC OR1K Javascript Emulator Running Linux With Network Support</title>
+        <title>jor1k: OpenRISC OR1K Javascript Emulator</title>
         <meta name="keywords" content="opencore, emulation, or1000, javascript, linux">
         <meta name="author" content="Sebastian Macke">
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/modern.css">
+        <style>
+            /* Ensure the modern container is used by default for a cleaner look */
+            body { background: #11111b; margin: 0; padding: 20px; display: flex; justify-content: center; }
+            .modern-container { max-width: 1200px; width: 100%; }
+        </style>
     </head>
     <body onload="Start()">
 
-    <div id="classic-header">
-        <canvas id="fbfullscreen" width="640" height="400" style="width: 0px; height: 0px;"></canvas>
-        <div class="heading" id="heading">
-            <h1>jor1k: OpenRISC OR1K Javascript Emulator Running Linux With Network Support</h1>
-        </div>
-    </div>
+    <canvas id="fbfullscreen" width="640" height="400" style="width: 0px; height: 0px;"></canvas>
 
     <div class="modern-container" id="main-container">
         <div class="modern-emulator-row">
@@ -38,8 +38,8 @@
 
             <input type="text" id="loadPath" value="/home/user" />
 
-            <div class="d-flex gap-2">
-                <label style="margin:0">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <label style="margin:0; cursor: pointer;">
                     <img src="images/upload.png" width="18px" height="18px" title="Upload" class="modern-icon-btn" />
                     <input type="file" id="files" style="display:none" onchange='OnUploadFiles(this.files)' multiple />
                 </label>
@@ -48,20 +48,11 @@
                 <img src="images/fullscreen.png" width="18px" height="18px" onclick='Fullscreen()' title="Fullscreen" class="modern-icon-btn" />
             </div>
 
-            <textarea style="height: 20px;" type=text cols="5" rows="1" id="clipboard">clipb</textarea>
+            <textarea style="height: 20px; background: #1e1e2e; color: #cdd6f4; border: 1px solid #45475a;" type=text cols="5" rows="1" id="clipboard">clipb</textarea>
 
-            <label class="small"><input type="checkbox" onclick='jor1k.sound.Enabled(this.checked)'> Audio</label>
-            <span id="stats" style="margin-left:auto"></span>
+            <label style="font-size: 0.8rem; color: #a6adc8;"><input type="checkbox" onclick='jor1k.sound.Enabled(this.checked)'> Audio</label>
+            <span id="stats" style="margin-left:auto; font-family: monospace; font-size: 0.8rem; color: #a6adc8;"></span>
         </div>
-    </div>
-
-    <div class="infobox" id="infobox">
-        <h3>Links</h3>
-        <ul>
-            <li><a href="compile.html">Edit, compile and run</a> C code in your browser</li>
-            <li><a href="https://github.com/s-macke/jor1k/wiki/Explore-the-emulator">Explore the emulator</a></li>
-            <li><a href="https://github.com/s-macke/jor1k/">Project</a> page at github</li>
-        </ul>
     </div>
 
     <script src="jor1k-master-min.js"></script>
@@ -131,9 +122,7 @@
         // Embedded Mode Detection
         if (window.location.search.includes("embed=true")) {
             document.body.classList.add("modern-mode");
-            document.getElementById("classic-header").style.display = "none";
-            document.getElementById("infobox").style.display = "none";
-            document.getElementById("main-container").classList.add("modern-container");
+            document.body.style.padding = "0";
         }
     </script>
     <script src="automation-helper.js"></script>
