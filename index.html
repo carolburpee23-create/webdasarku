@@ -5,21 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>jor1k Automation Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #1e1e2e; color: #cdd6f4; font-family: 'JetBrains Mono', monospace; }
-        .hero { background: #313244; border-bottom: 2px solid #45475a; padding: 20px 0; }
-        .emulator-container { border: 2px solid #45475a; border-radius: 10px; overflow: hidden; height: 500px; background: #000; }
+        :root {
+            --bg-dark: #11111b;
+            --bg-card: #1e1e2e;
+            --bg-accent: #313244;
+            --text-main: #cdd6f4;
+            --accent-blue: #89b4fa;
+            --accent-green: #a6e3a1;
+            --accent-red: #f38ba8;
+            --accent-orange: #fab387;
+        }
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .hero { background: var(--bg-card); border-bottom: 2px solid var(--bg-accent); padding: 30px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .emulator-container { border: 2px solid var(--bg-accent); border-radius: 12px; overflow: hidden; height: 520px; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         iframe { width: 100%; height: 100%; border: none; }
-        .terminal-log { background: #11111b; border: 1px solid #45475a; border-radius: 5px; height: 200px; overflow-y: auto; padding: 10px; font-size: 0.85rem; color: #a6e3a1; margin-top: 15px; }
-        .card { background: #313244; border: 1px solid #45475a; color: #cdd6f4; border-radius: 10px; }
-        .btn-primary { background: #89b4fa; border: none; color: #1e1e2e; font-weight: bold; }
+        .terminal-log { background: #000; border: 1px solid var(--bg-accent); border-radius: 8px; height: 220px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-green); margin-top: 20px; position: relative; }
+        .terminal-header { position: sticky; top: -15px; background: #000; padding: 5px 0; border-bottom: 1px solid #222; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: var(--bg-card); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-primary { background: var(--accent-blue); border: none; color: var(--bg-dark); font-weight: 700; border-radius: 8px; padding: 10px 20px; }
         .btn-primary:hover { background: #b4befe; }
-        .form-control { background: #1e1e2e; border: 1px solid #45475a; color: #cdd6f4; }
-        .form-control:focus { background: #181825; color: #cdd6f4; border-color: #89b4fa; box-shadow: none; }
-        code { color: #f38ba8; }
-        .status-badge { font-size: 0.75rem; padding: 2px 8px; border-radius: 20px; }
-        .status-online { background: #a6e3a1; color: #11111b; }
-        .status-busy { background: #fab387; color: #11111b; }
+        .form-control { background: var(--bg-dark); border: 1px solid var(--bg-accent); color: var(--text-main); border-radius: 8px; font-family: 'JetBrains Mono', monospace; }
+        .form-control:focus { background: #181825; color: var(--text-main); border-color: var(--accent-blue); box-shadow: none; }
+        .status-badge { font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-online { background: var(--accent-green); color: var(--bg-dark); }
+        .status-busy { background: var(--accent-orange); color: var(--bg-dark); }
+        .quick-btn { background: var(--bg-accent); border: 1px solid transparent; color: var(--text-main); font-size: 0.8rem; padding: 5px 12px; border-radius: 6px; transition: all 0.2s; }
+        .quick-btn:hover { border-color: var(--accent-blue); background: var(--bg-dark); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-accent); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #45475a; }
     </style>
 </head>
 <body>
@@ -27,69 +44,69 @@
 <div class="hero mb-4">
     <div class="container d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="h3 mb-0">jor1k <span style="color:#89b4fa">Automation Hub</span></h1>
-            <p class="small text-muted mb-0">Professional Web-Based Sandbox Control</p>
+            <h1 class="h2 mb-0 fw-bold">jor1k <span style="color:var(--accent-blue)">Automation Hub</span></h1>
+            <p class="small text-muted mb-0">Unified Sandbox Control & Automation Console</p>
         </div>
-        <div>
-            <span class="status-badge status-online" id="systemStatus">SYSTEM READY</span>
+        <div class="text-end">
+            <span class="status-badge status-online" id="systemStatus">System Ready</span>
+            <div class="small text-muted mt-1" id="bootProgress">Booting...</div>
         </div>
     </div>
 </div>
 
 <div class="container pb-5">
     <div class="row g-4">
-        <!-- Live Control -->
+        <!-- Live Emulator & Console -->
         <div class="col-lg-8">
             <div class="emulator-container">
                 <iframe id="jor1kFrame" src="demos/main.html?embed=true"></iframe>
             </div>
             <div class="terminal-log" id="terminalLog">
-                [SYSTEM] Waiting for emulator initialization...<br>
+                <div class="terminal-header">
+                    <span class="text-muted small">LIVE CONSOLE OUTPUT</span>
+                    <button class="btn btn-link btn-sm p-0 text-muted" onclick="clearLog()">Clear</button>
+                </div>
+                <div id="logContent">[SYSTEM] Establishing connection to sandbox...<br></div>
             </div>
         </div>
 
         <!-- Command Panel -->
         <div class="col-lg-4">
             <div class="card p-4 mb-4">
-                <h4 class="mb-3">🎮 Direct Control</h4>
+                <h4 class="h5 mb-3 fw-bold">🎮 Command Center</h4>
                 <div class="mb-3">
-                    <label class="form-label small">Sandbox Command</label>
-                    <input type="text" id="cmdInput" class="form-control" placeholder="e.g. ls -la /">
+                    <label class="form-label small text-muted">Direct Linux Shell</label>
+                    <input type="text" id="cmdInput" class="form-control" placeholder="e.g. ls -la /home/user">
                 </div>
-                <button class="btn btn-primary w-100 mb-3" onclick="executeCmd()">EXECUTE COMMAND</button>
+                <button class="btn btn-primary w-100 mb-3" id="executeBtn" onclick="executeCmd()">EXECUTE COMMAND</button>
                 <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="quickCmd('uname -a')">uname</button>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="quickCmd('date')">date</button>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="quickCmd('top')">top</button>
+                    <button class="quick-btn" onclick="quickCmd('uname -a')">uname</button>
+                    <button class="quick-btn" onclick="quickCmd('date')">date</button>
+                    <button class="quick-btn" onclick="quickCmd('top')">top</button>
+                    <button class="quick-btn" onclick="quickCmd('ls -R /')">list files</button>
                 </div>
             </div>
 
-            <div class="card p-4">
-                <h4 class="mb-3">🧠 AI Assistant</h4>
-                <p class="small text-muted">Translate natural language to sandbox tasks.</p>
+            <div class="card p-4 mb-4">
+                <h4 class="h5 mb-3 fw-bold">🧠 AI Prompt</h4>
+                <p class="small text-muted">Speak naturally to the sandbox.</p>
                 <div class="mb-3">
-                    <textarea id="aiInput" class="form-control" rows="2" placeholder="Tell me what to do..."></textarea>
+                    <textarea id="aiInput" class="form-control" rows="2" placeholder="e.g. What time is it?"></textarea>
                 </div>
                 <button class="btn btn-outline-primary btn-sm w-100" onclick="interpretAI()">INTERPRET & RUN</button>
-                <div id="aiFeedback" class="small mt-2 text-info"></div>
+                <div id="aiFeedback" class="small mt-2" style="color:var(--accent-orange)"></div>
             </div>
-        </div>
 
-        <!-- Documentation -->
-        <div class="col-12">
             <div class="card p-4">
-                <h4 class="mb-3">🛠️ Professional API Integration</h4>
-                <div class="row">
-                    <div class="col-md-6 border-end border-secondary">
-                        <p class="small">Use the headless engine via Playwright for fully automated workflows.</p>
-                        <pre class="bg-dark p-2 rounded small">curl -X POST /automation/command \
--H "Authorization: Bearer key" \
--d '{"command": "run uname"}'</pre>
-                    </div>
-                    <div class="col-md-6 ps-md-4">
-                        <p class="small">The dashboard uses <code>postMessage</code> to talk to jor1k inside the iframe.</p>
-                        <code class="small">iframe.contentWindow.postMessage({type: 'execute', command: '...'}, '*')</code>
-                    </div>
+                <h4 class="h5 mb-3 fw-bold">ℹ️ Quick Stats</h4>
+                <div class="d-flex justify-content-between mb-1 small">
+                    <span>Cores:</span> <span class="text-info">1 (OpenRISC)</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1 small">
+                    <span>Memory:</span> <span class="text-info">32MB</span>
+                </div>
+                <div class="d-flex justify-content-between small">
+                    <span>Network:</span> <span class="text-info">Enabled</span>
                 </div>
             </div>
         </div>
@@ -98,23 +115,32 @@
 
 <script>
     const frame = document.getElementById('jor1kFrame');
-    const log = document.getElementById('terminalLog');
+    const log = document.getElementById('logContent');
+    const logWrapper = document.getElementById('terminalLog');
     const status = document.getElementById('systemStatus');
+    const bootInfo = document.getElementById('bootProgress');
+    const executeBtn = document.getElementById('executeBtn');
 
     window.addEventListener('message', function(event) {
         const msg = event.data;
         if (msg.type === 'output') {
             log.innerHTML += msg.data.replace(/\n/g, '<br>');
-            log.scrollTop = log.scrollHeight;
+            logWrapper.scrollTop = logWrapper.scrollHeight;
+            if (msg.data.includes('~ $') || msg.data.includes('/ #')) {
+                bootInfo.innerText = "System Ready";
+            }
         }
         if (msg.type === 'status') {
-            status.innerText = "EXECUTING...";
+            status.innerText = "EXECUTING";
             status.className = "status-badge status-busy";
+            executeBtn.disabled = true;
         }
         if (msg.type === 'result') {
-            status.innerText = "SYSTEM READY";
+            status.innerText = "System Ready";
             status.className = "status-badge status-online";
-            log.innerHTML += '<br><span style="color:#fab387">[DONE] Command completed successfully.</span><br>';
+            executeBtn.disabled = false;
+            log.innerHTML += '<br><span style="color:var(--accent-orange)">[DONE] Task finished successfully.</span><br>';
+            logWrapper.scrollTop = logWrapper.scrollHeight;
         }
     });
 
@@ -122,7 +148,7 @@
         const cmd = document.getElementById('cmdInput').value;
         if (!cmd) return;
 
-        log.innerHTML += `<br><span style="color:#89b4fa">[USER] Executing: ${cmd}</span><br>`;
+        log.innerHTML += `<br><span style="color:var(--accent-blue)">[USER] Sending: ${cmd}</span><br>`;
         frame.contentWindow.postMessage({ type: 'execute', command: cmd }, '*');
     }
 
@@ -131,25 +157,25 @@
         executeCmd();
     }
 
+    function clearLog() {
+        log.innerHTML = "[SYSTEM] Console cleared.<br>";
+    }
+
     function interpretAI() {
         const text = document.getElementById('aiInput').value.toLowerCase();
         const feedback = document.getElementById('aiFeedback');
 
         let cmd = "";
-        if (text.includes("siapa") || text.includes("who")) cmd = "whoami";
-        else if (text.includes("waktu") || text.includes("time") || text.includes("date")) cmd = "date";
+        if (text.includes("who") || text.includes("siapa")) cmd = "whoami";
+        else if (text.includes("time") || text.includes("date") || text.includes("jam")) cmd = "date";
         else if (text.includes("list") || text.includes("lihat")) cmd = "ls -la";
-        else if (text.includes("sistem") || text.includes("os")) cmd = "uname -a";
-        else {
-            feedback.innerText = "I didn't quite get that, but I'll try running it as is.";
-            cmd = text;
-        }
+        else if (text.includes("system") || text.includes("os") || text.includes("info")) cmd = "uname -a";
+        else if (text.includes("cpu") || text.includes("proses")) cmd = "top -n 1";
+        else cmd = text;
 
-        if (cmd) {
-            feedback.innerText = `Interpreted as: ${cmd}`;
-            document.getElementById('cmdInput').value = cmd;
-            executeCmd();
-        }
+        feedback.innerText = `Mapped to: ${cmd}`;
+        document.getElementById('cmdInput').value = cmd;
+        executeCmd();
     }
 </script>
 
